@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -21,9 +22,12 @@ public class MainActivity extends AppCompatActivity {
         app.callAttr("main");
 
         WebView myWebView = (WebView) findViewById(R.id.webview);
+        myWebView.setWebViewClient(new WebViewClient());
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        myWebView.loadUrl("http://127.0.0.1:5000/skoler"); // Lav en url på betterlectio.dk som tillader at man ændre en ny api_url i localstorage. Måske et "mobile.betterlectio.dk" sub-domain
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setUserAgentString("BetterLectio Mobile");
+        myWebView.loadUrl("https://mobile--betlec.netlify.app/"); // Lav en url på betterlectio.dk som tillader at man ændre en ny api_url i localstorage. Måske et "mobile.betterlectio.dk" sub-domain
     }
 
 }
