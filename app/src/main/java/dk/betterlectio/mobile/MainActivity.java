@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         WebView myWebView = (WebView) findViewById(R.id.webview);
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        myWebView.loadUrl("http://127.0.0.1:5000"); // Lav en url på betterlectio.dk som tillader at man ændre en ny api_url i localstorage. Måske et "mobile.betterlectio.dk" sub-domain
+        myWebView.loadUrl("http://127.0.0.1:5000/skoler"); // Lav en url på betterlectio.dk som tillader at man ændre en ny api_url i localstorage. Måske et "mobile.betterlectio.dk" sub-domain
     }
 
 }
