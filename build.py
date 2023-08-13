@@ -13,6 +13,8 @@ removeFolder("./app/src/main/python")
 os.mkdir("./app/src/main/python")
 
 package = requests.get("https://raw.githubusercontent.com/BetterLectio/betterLectio/main/package.json").json()
+open("version.txt", "w").write(package["version"])
+
 app = requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/api/app.py").text
 app = app.replace("if __name__ == '__main__':\n    app.run()", "")
 app += f"""

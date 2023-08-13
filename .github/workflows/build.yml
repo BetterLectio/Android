@@ -26,20 +26,22 @@ jobs:
             distribution: "oracle"
             java-version: "17"
 
-
         - name: Keystore
           run: |
             mkdir ./keystore
             echo "$BASE64_KEYSTORE" > ./keystore/keyEncoded.txt
             base64 --decode ./keystore/keyEncoded.txt > ./keystore/key.jks
-            ls keystore/
-            readlink -f ./keystore
 
-        - name: File tree
-          run: |
-            ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
-
-        - name: Build apk
+        - name: Build APK
           run : |
             python3 build.py
-            ls dist/
+
+        - name: Getting BetterLectio version
+          run : |
+            echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+
+        - name: Uploading release
+          uses: softprops/action-gh-release@v1
+          with:
+            tag_name: "$VERSION"
+            files: dist/*
