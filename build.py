@@ -38,7 +38,7 @@ open("./gradle.properties", "a").write(f"""
 # APK signing
 RELEASE_STORE_FILE=../keystore/key.jks
 RELEASE_STORE_PASSWORD={os.environ["RELEASE_STORE_PASSWORD"]}
-RELEASE_KEY_ALIAS=key0{os.environ["RELEASE_KEY_ALIAS"]}
+RELEASE_KEY_ALIAS={os.environ["RELEASE_KEY_ALIAS"]}
 RELEASE_KEY_PASSWORD={os.environ["RELEASE_KEY_PASSWORD"]}
 """) #RELEASE_KEY_ALIAS={os.environ["RELEASE_KEY_ALIAS"]}
 
