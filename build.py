@@ -27,35 +27,12 @@ def thread():
 
 def main():
     Thread(target=thread).start()
-"""
-open("./app/src/main/python/app.py", "w").write(app)
-
-requirements = requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt").text
-open("./app/src/main/python/requirements.txt", "w").write(requirements)
-
-# keystore path = /home/jonathan/Skrivebord/BetterLectio/BetterLectioMobile/keystore/key.jks
-# keystore password: f("=Su(("!=?)#"!93:_
-
-"""
-Key:
-    Alias: key0
-    Password: gi)#"(#jSNAbvB5!
-    Validity: 25 years
-    Certificate:
-        First and Last Name: BetterLectio Mobile
-        Organizational Unit: BetterLectio
-        Organizational: BetterLectio
-        City or Locality: Kongens Lyngby
-        State or Province: Storkøbenhavn
-        Country Code (XX): 45
-"""
-
 oldGradleProperties = open("./gradle.properties").read()
 open("./gradle.properties", "a").write(f"""
 # APK signing
 RELEASE_STORE_FILE=../keystore/key.jks
 RELEASE_STORE_PASSWORD={os.environ["RELEASE_STORE_PASSWORD"]}
-RELEASE_KEY_ALIAS={os.environ["RELEASE_KEY_ALIAS"]}
+RELEASE_KEY_ALIAS=key0#{os.environ["RELEASE_KEY_ALIAS"]}
 RELEASE_KEY_PASSWORD={os.environ["RELEASE_KEY_PASSWORD"]}
 """)
 
