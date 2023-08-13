@@ -11,8 +11,6 @@ import requests
 from bs4 import BeautifulSoup
 import traceback
 
-from threading import Thread
-
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*"}})
 
@@ -236,8 +234,8 @@ def result():
     except Exception:
         return jsonify({"backend_error": traceback.format_exc()}), 500
 
-@app.route('/informationer')
-@cache_for(minutes=10080) # 1 week
+@app.route('/informationer') 
+@cache_for(minutes=10080) # 1 week 
 def informationer():
     try:
         cookie = request.headers.get("lectio-cookie")
@@ -449,9 +447,45 @@ def eksamener():
     except Exception:
         return jsonify({"backend_error": traceback.format_exc()}), 500
 
+@app.route("/terminer")
+def terminer():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+
+        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.fåTerminer()))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+@app.route("/aendre_termin")
+def ændre_termin():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+        id = request.args.get("id")
+
+        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.ændreTermin(id)))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+
+
+@app.route("/app_version")
+def app_version():
+    return "0.10.21"
+
+from threading import Thread
+
 def thread():
     app.run(host="0.0.0.0")
-
 
 def main():
     Thread(target=thread).start()

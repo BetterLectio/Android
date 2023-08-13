@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setUserAgentString("BetterLectio Mobile");
-        myWebView.loadUrl("https://mobile--betlec.netlify.app/"); // Lav en url på betterlectio.dk som tillader at man ændre en ny api_url i localstorage. Måske et "mobile.betterlectio.dk" sub-domain
+        myWebView.loadUrl("https://app.betterlectio.dk/"); // Lav en url på betterlectio.dk som tillader at man ændre en ny api_url i localstorage. Måske et "mobile.betterlectio.dk" sub-domain
     }
 
 }
