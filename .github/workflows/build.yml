@@ -11,6 +11,7 @@ jobs:
         RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}<<
         RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+        BASE64_KEYSTORE: ${{ secrets.BASE64_KEYSTORE }}
 
       steps:
         - name: Checkout project sources
@@ -29,8 +30,8 @@ jobs:
         - name: Keystore
           run: |
             mkdir ./keystore
-            echo "$RELEASE_KEYSTORE" > ./keystore/key.jks.asc
-            gpg -d --passphrase "$RELEASE_KEYSTORE_PASSPHRASE" --batch ./keystore/key.jks.asc > ./keystore/key.jks
+            echo "$BASE64_KEYSTORE" > ./keystore/keyEncoded.txt
+            base64 --decode ./keystore/keyEncoded.txt > ./keystore/key.jks
             ls keystore/
             readlink -f ./keystore
 
