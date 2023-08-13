@@ -35,6 +35,10 @@ jobs:
             ls keystore/
             readlink -f ./keystore
 
+        - name: File tree
+          run: |
+            ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
+
         - name: Build apk
           run : |
             python3 build.py
