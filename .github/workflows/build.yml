@@ -32,6 +32,7 @@ jobs:
             echo "$RELEASE_KEYSTORE" > ./keystore/key.jks.asc
             gpg -d --passphrase "$RELEASE_KEYSTORE_PASSPHRASE" --batch ./keystore/key.jks.asc > ./keystore/key.jks
             ls keystore/
+            readlink -f ./keystore
 
         - name: Build apk
           run : |
