@@ -36,9 +36,11 @@ jobs:
           run : |
             python3 build.py
 
-        - name: Uploading release
+        - name: Getting BetterLectio version
           run : |
             echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+
+        - name: Uploading release
           uses: softprops/action-gh-release@v1
           with:
             tag_name: ${{ VERSION }}
