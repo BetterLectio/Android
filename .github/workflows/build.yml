@@ -6,10 +6,18 @@ jobs:
       runs-on: ubuntu-latest
       environment: APK_BUILD
       env:
+        RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+        RELEASE_KEYSTORE_PASSPHRASE: ${{ secrets.RELEASE_KEYSTORE_PASSPHRASE }}
         RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+        RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
 
       steps:
         - uses: actions/checkout@v2
-        - run : |
-            python3 -c "import os; print(os.environ['RELEASE_KEY_ALIAS'])"
-            echo "$RELEASE_KEY_ALIAS"
+        - run: |
+            mkdir ./keystore
+            echo "$RELEASE_KEYSTORE" > ./keystore/key.jks.asc
+            gpg -d --passphrase "$RELEASE_KEYSTORE_PASSPHRASE" --batch ./keystore/key.jks.asc > ./keystore/key.jks
+            ls keystore/
+        #- run : |
+        #    python3 build.py
