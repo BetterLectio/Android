@@ -4,6 +4,7 @@ jobs:
     build-apk:
       name: buildSignedAPK
       runs-on: ubuntu-latest
+      environment: APK_BUILD
       steps:
         - uses: actions/checkout@v2
         - run : |
