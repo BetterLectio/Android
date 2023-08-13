@@ -11,4 +11,5 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - run : |
+            python3 -c "import os; print(os.environ['RELEASE_KEY_ALIAS'])"
             echo "$RELEASE_KEY_ALIAS"
