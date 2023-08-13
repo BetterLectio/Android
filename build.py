@@ -18,7 +18,7 @@ app = app.replace("if __name__ == '__main__':\n    app.run()", "")
 app += f"""
 @app.route("/app_version")
 def app_version():
-    return "{package["version"]}"
+    return \"{package["version"]}\"
 
 from threading import Thread
 
@@ -27,14 +27,20 @@ def thread():
 
 def main():
     Thread(target=thread).start()
+"""
+open("./app/src/main/python/app.py", "w").write(app)
+
+requirements = requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt").text
+open("./app/src/main/python/requirements.txt", "w").write(requirements)
+
 oldGradleProperties = open("./gradle.properties").read()
 open("./gradle.properties", "a").write(f"""
 # APK signing
 RELEASE_STORE_FILE=../keystore/key.jks
 RELEASE_STORE_PASSWORD={os.environ["RELEASE_STORE_PASSWORD"]}
-RELEASE_KEY_ALIAS=key0#{os.environ["RELEASE_KEY_ALIAS"]}
+RELEASE_KEY_ALIAS=key0{os.environ["RELEASE_KEY_ALIAS"]}
 RELEASE_KEY_PASSWORD={os.environ["RELEASE_KEY_PASSWORD"]}
-""")
+""") #RELEASE_KEY_ALIAS={os.environ["RELEASE_KEY_ALIAS"]}
 
 removeFolder("./app/build/outputs/apk/")
 os.system("./gradlew build")
