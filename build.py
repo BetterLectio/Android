@@ -59,12 +59,12 @@ RELEASE_KEY_ALIAS={os.environ["RELEASE_KEY_ALIAS"]}
 RELEASE_KEY_PASSWORD={os.environ["RELEASE_KEY_PASSWORD"]}
 """)
 
-shutil.rmtree("./app/build/outputs/apk/")
+removeFolder("./app/build/outputs/apk/")
 os.system("./gradlew build")
 
 open("./gradle.properties", "w").write(oldGradleProperties)
 
-shutil.rmtree("dist")
+removeFolder("dist")
 os.mkdir("dist")
 shutil.move("./app/build/outputs/apk/release/app-release.apk", "./dist/betterlectio.apk")
 
