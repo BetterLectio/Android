@@ -13,11 +13,19 @@ jobs:
         RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
 
       steps:
-        - uses: actions/checkout@v2
-        - run: |
+        - name: Checkout project sources
+          uses: actions/checkout@3
+
+        - name: Setup Gradle
+          uses: gradle/gradle-build-action@v2
+
+        - name: Keystore
+          run: |
             mkdir ./keystore
             echo "$RELEASE_KEYSTORE" > ./keystore/key.jks.asc
             gpg -d --passphrase "$RELEASE_KEYSTORE_PASSPHRASE" --batch ./keystore/key.jks.asc > ./keystore/key.jks
-        - run : |
+        
+        - name: Build apk
+          run : |
             python3 build.py
             ls dist/
