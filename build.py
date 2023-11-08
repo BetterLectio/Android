@@ -1,6 +1,7 @@
 import os
 import shutil
 import requests
+import re
 
 def removeFolder(directory):
     try:
@@ -8,19 +9,23 @@ def removeFolder(directory):
     except FileNotFoundError:
         pass
 
-
 removeFolder("./app/src/main/python")
 os.mkdir("./app/src/main/python")
 
 package = requests.get("https://raw.githubusercontent.com/BetterLectio/betterLectio/main/package.json").json()
 open("version.txt", "w").write(package["version"])
 
+requirements = requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt").text
+open("./app/src/main/python/requirements.txt", "w").write(requirements)
+
+version = re.search("VERSION = '\d+\.\d+\.\d+'", requests.get("https://raw.githubusercontent.com/BetterLectio/python-lectio/main/setup.py").text).group().split("'")[1]
+
 app = requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/api/app.py").text
 app = app.replace("if __name__ == '__main__':\n    app.run()", "")
 app += f"""
 @app.route("/app_version")
 def app_version():
-    return \"{package["version"]}\"
+    return \"{version}\"
 
 from threading import Thread
 
@@ -31,9 +36,6 @@ def main():
     Thread(target=thread).start()
 """
 open("./app/src/main/python/app.py", "w").write(app)
-
-requirements = requests.get("https://raw.githubusercontent.com/BetterLectio/BetterLectio-Flask-Backend/main/requirements.txt").text
-open("./app/src/main/python/requirements.txt", "w").write(requirements)
 
 oldGradleProperties = open("./gradle.properties").read()
 open("./gradle.properties", "a").write(f"""

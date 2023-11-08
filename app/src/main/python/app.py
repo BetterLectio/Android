@@ -58,12 +58,27 @@ def auth():
     except Exception:
         return jsonify({"success": False, "backend_error": traceback.format_exc()}), 500
 
+@app.route('/qr-auth')
+def qrAuth():
+    try:
+        userId = request.headers.get('userId')
+        QrId = request.headers.get('QrId')
+        skoleId = request.headers.get('skoleid')
+
+        lectioClient = lectio.sdk(userId=userId, QrId=QrId, skoleId=skoleId)
+        resp = make_response(jsonify({"success": True}))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"success": False, "backend_error": traceback.format_exc()}), 500
+
 @app.route('/check-cookie')
 def checkCookie():
     cookie = request.headers.get("lectio-cookie")
 
     try:
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
         lectioClient.fåElev(lectioClient.elevId)
 
         resp = make_response(jsonify({"valid": True}))
@@ -78,7 +93,7 @@ def checkCookie():
 def mig():
     try:
         cookie = request.headers.get("lectio-cookie")
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.fåElev(lectioClient.elevId)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -99,7 +114,7 @@ def skema():
         uge = request.args.get("uge")
         år = request.args.get("år")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.skema(uge=uge, år=år, id=id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -114,7 +129,7 @@ def lektier():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.lektier()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -128,7 +143,7 @@ def opgaver():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.opgaver()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -142,7 +157,7 @@ def modul():
         cookie = request.headers.get("lectio-cookie")
         absid = request.args.get("absid")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.modul(absid=absid)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -157,7 +172,7 @@ def besked():
         cookie = request.headers.get("lectio-cookie")
         id = request.args.get("id")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.besked(message_id=id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -173,7 +188,7 @@ def beskeder():
         cookie = request.headers.get("lectio-cookie")
         id = request.args.get("id")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
         resp = make_response(jsonify(lectioClient.beskeder(id=id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
         resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
@@ -187,7 +202,7 @@ def beskeder2():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         beskeder = []
         for id in [-20, -30, -35, -10]:
@@ -224,7 +239,7 @@ def result():
         cookie = request.headers.get("lectio-cookie")
         data = request.get_json(force=True)
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
         lectioClient.besvarBesked(data["message_id"], data["id"], data["titel"], data["content"], 1)
 
         resp = make_response(jsonify({"success": True}))
@@ -240,7 +255,7 @@ def informationer():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.informationer()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -256,7 +271,7 @@ def profilBilled():
     id = request.args.get("id")
     fullsize = request.args.get("fullsize")
 
-    lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+    lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
     if (pictureId := lectioClient.fåBruger(id)['pictureid']) != None:
         url = f"https://www.lectio.dk/lectio/{lectioClient.skoleId}/GetImage.aspx?pictureid={pictureId}"
@@ -276,7 +291,7 @@ def opgave():
         cookie = request.headers.get("lectio-cookie")
         exerciseid = request.args.get("exerciseid")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.opgave(exerciseid=exerciseid)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -291,7 +306,7 @@ def fravaer():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.fravær()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -306,7 +321,7 @@ def dokumenter():
         cookie = request.headers.get("lectio-cookie")
         folderid = request.args.get("folderid")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.dokumenter(folderid=folderid)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -320,7 +335,7 @@ def forside():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.forside()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -334,7 +349,7 @@ def ledige_lokaler():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.ledigeLokaler()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -349,7 +364,7 @@ def karakterer():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.karakterer()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -365,7 +380,7 @@ def studieretningspræsentation():
         cookie = request.headers.get("lectio-cookie")
         id = request.headers.get("id")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.studieretningspræsentation(elevId=id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -391,7 +406,7 @@ def spørgeskemaer():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.spørgeskemaer()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -407,7 +422,7 @@ def få_bruger():
         cookie = request.headers.get("lectio-cookie")
         id = request.headers.get("id")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.fåBruger(id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -423,7 +438,7 @@ def hold_til_fag():
         cookie = request.headers.get("lectio-cookie")
         id = request.args.get("id")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.holdTilFag(id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -438,7 +453,7 @@ def eksamener():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.eksamener()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -452,7 +467,7 @@ def terminer():
     try:
         cookie = request.headers.get("lectio-cookie")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.fåTerminer()))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
@@ -467,9 +482,87 @@ def ændre_termin():
         cookie = request.headers.get("lectio-cookie")
         id = request.args.get("id")
 
-        lectioClient = lectio.sdk(brugernavn="", adgangskode="", skoleId="", base64Cookie=cookie)
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
 
         resp = make_response(jsonify(lectioClient.ændreTermin(id)))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+@app.route("/spoergeskema")
+@cache_for(minutes=5)
+def spørgeskema():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+        id = request.args.get("id")
+
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.spørgeskema(id)))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+@app.route("/besvar_spoergeskema", methods=["POST"])
+def besvarSpørgeskema():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+        id = request.args.get("id")
+        besvarelser = request.json.get("besvarelser")
+
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.besvarSpørgeskema(id, besvarelser)))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+@app.route("/lokale_dagsorden")
+@cache_for(minutes=5)
+def lokaleDagsorden():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.lokaleDagsorden()))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+@app.route("/studieplan")
+@cache_for(days=1)
+def studieplan():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.studieplan()))
+        resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
+        resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
+        return resp
+    except Exception:
+        return jsonify({"backend_error": traceback.format_exc()}), 500
+
+@app.route("/forloeb")
+@cache_for(minutes=5)
+def forløb():
+    try:
+        cookie = request.headers.get("lectio-cookie")
+        id = request.args.get("id")
+
+        lectioClient = lectio.sdk(brugernavn=None, adgangskode=None, skoleId=None, base64Cookie=cookie)
+
+        resp = make_response(jsonify(lectioClient.forløb(id)))
         resp.headers["set-lectio-cookie"] = lectioClient.base64Cookie()
         resp.headers["Access-Control-Expose-Headers"] = "set-lectio-cookie"
         return resp
@@ -480,7 +573,7 @@ def ændre_termin():
 
 @app.route("/app_version")
 def app_version():
-    return "0.10.21"
+    return "1.27.14"
 
 from threading import Thread
 
